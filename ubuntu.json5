@@ -1,0 +1,65 @@
+// USAGE with unpatched packer: cfgt -i myfile.json5 | packer build -
+// USAGE with patched packer: packer build myfile.json5
+{
+    variables: {
+        // Environment variables pulled from `triton env` or `triton env $(PROFILE_NAME)`
+        triton_account: "{{ env `SDC_ACCOUNT` }}",
+        triton_key_id: "{{ env `SDC_KEY_ID` }}",
+        triton_key_material_path: "{{ env `SDC_KEY_PATH` }}",
+        triton_url: "{{ env `SDC_URL` }}",
+        image_name: "b-ubuntu-16.04",
+        image_version: "1.0.0",
+    },
+
+    builders: [
+        {
+            type: "triton",
+
+            triton_url: "{{ user `triton_url` }}",
+            triton_account: "{{ user `triton_account` }}",
+            triton_key_id: "{{ user `triton_key_id` }}",
+            triton_key_material: "{{ user `triton_key_material_path` }}",
+
+            source_machine_name: "b-ubuntu-build",
+
+            // Value from the NAME column output from `make packages`
+            source_machine_package: "79ddc917-7076-6b57-b53c-94edb63210e1",
+
+            // Value from the ID column output from `make images-freebsd`
+            source_machine_image: "0f8a92f6-47e7-11e8-81b9-177492e70405",
+
+            // Value from the ID column output from `make networks`
+            source_machine_networks: [
+                "05909d29-7c4f-4c04-9dab-dad2068de161",
+            ],
+
+            ssh_username: "ubuntu",
+            ssh_private_key_file: "{{ user `triton_key_material_path` }}",
+
+            image_name: "{{ user `image_name` }}",
+            image_version: "{{ user `image_version` }}",
+        },
+    ],
+
+    provisioners: [
+        {
+            type: "shell",
+            inline: [
+                "uname -a",
+                "sudo systemctl stop unattended-upgrades",
+                "sudo systemctl disable unattended-upgrades",
+                "sudo systemctl stop apt-daily.timer",
+                "sudo systemctl disable apt-daily.timer",
+                "sudo apt remove -y unattended-upgrades",
+                "sudo apt-get update",
+                "sudo ps auxw | grep -i unatt",
+                "sudo apt-get install python"
+            ],
+        },
+        {
+            type: "ansible",
+            playbook_file: "./plays/bootstrap.yml",
+            user: 'ubuntu'
+        }
+    ],
+}

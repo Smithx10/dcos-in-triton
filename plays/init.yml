@@ -20,10 +20,19 @@
   roles:
     - roles/dcos-node
 
-- hosts: agent
+- hosts: agent_priv
   become: yes
   become_user: root
   vars:
     - server_role: "slave"
   roles:
     - roles/dcos-node
+
+- hosts: agent_pub
+  become: yes
+  become_user: root
+  vars:
+    - server_role: "slave_public"
+  roles:
+    - roles/dcos-node
+

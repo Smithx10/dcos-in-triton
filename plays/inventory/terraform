@@ -8,7 +8,8 @@ raise "no modules in input file" if !tf["modules"] || tf["modules"].empty?
 inventory = {
   bootstrap: [],
   master:    [],
-  agent:     [],
+  agent_pub:     [],
+  agent_priv:	[],
   _meta:     {
     hostvars: {}
   }
@@ -20,7 +21,7 @@ grouped_machines = tf["modules"][0]["resources"].map do |name, resource|
   OpenStruct.new({
     name:      attrs["name"],
     group:     attrs["tags.role"].to_sym,
-    privateip: attrs["ips.1"],
+    privateip: attrs["ips.0"],
     publicip:  attrs["primaryip"]
   })
 end.compact.group_by { |m| m.group }
@@ -40,7 +41,8 @@ grouped_machines.each do |group, machines|
 
     if m.group == :bootstrap
       hostvars[:masters] = grouped_machines[:master].map { |m| m.privateip }
-      hostvars[:agents]  = grouped_machines[:agent].map { |m| m.privateip }
+      hostvars[:agents_priv]  = grouped_machines[:agent_priv].map { |m| m.privateip }
+      hostvars[:agents_pub]  = grouped_machines[:agent_pub].map { |m| m.privateip }
     end
 
     inventory[:_meta][:hostvars][m.publicip] = hostvars

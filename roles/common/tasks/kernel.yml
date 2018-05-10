@@ -10,7 +10,7 @@
   when: must_upgrade_kernel.stdout == "yes"
 
 - name: restart machine
-  shell: sleep 2 && shutdown -r now "Applying Ansible kernel upgrade"
+  shell: shutdown -r now 
   async: 1
   poll: 0
   ignore_errors: yes
@@ -18,10 +18,9 @@
 
 - name: waiting for server to come back
   wait_for: >
-    port={{ ansible_port }}
+    port=22
     host={{ ansible_host | default(inventory_hostname) }}
-    state=started
-    delay=10
-    connect_timeout=30
+    delay=15
+    timeout=600
   delegate_to: localhost
   when: must_upgrade_kernel.stdout == "yes"

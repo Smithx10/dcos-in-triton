@@ -8,7 +8,7 @@
 - name: Install docker
   yum: name={{ item }} state=latest
   with_items:
-    - docker-engine
+    - docker-ce
     - python-docker-py
 
 - name: configure Docker daemon with storage driver
@@ -16,6 +16,13 @@
     owner=root
     src=docker.conf
     dest=/usr/lib/systemd/system/docker.service
+
+- name: configure Docker Daemon Web Socket
+  template:
+    owner=root
+    src=docker.socket
+    dest=/usr/lib/systemd/system/docker.socket
+
   notify:
     - reload units
     - restart docker

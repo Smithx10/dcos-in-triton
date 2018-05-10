@@ -1,3 +1,3 @@
 ---
 - name: disable firewalld
-  service: name=firewalld enabled=no state=stopped
+  service: name=ufw enabled=no state=stopped

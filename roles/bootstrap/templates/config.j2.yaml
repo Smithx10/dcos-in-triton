@@ -1,5 +1,9 @@
 agent_list:
-{% for agent in agents %}
+{% for agent in agents_priv %}
+  - {{ agent }}
+{% endfor %}
+public_agent_list:
+{% for agent in agents_pub %}
   - {{ agent }}
 {% endfor %}
 bootstrap_url: "http://{{ bootstrap_host }}:8888"
@@ -11,10 +15,12 @@ master_list:
   - {{ master }}
 {% endfor %}
 process_timeout: 10000
+dns_search: tritonhost.com inst.smith.tritonhost.com svc.smith.tritonhost.com
 resolvers:
+  - 192.168.100.2
   - 8.8.8.8
-  - 8.8.4.4
 ssh_port: 22
 ssh_user: core
-superuser_password_hash: none
-superuser_username: none
+superuser_password_hash: $6$rounds=656000$T.uscGpie./wiyE/$t8tM632tYdp1K/DwHW11OogM6Fv/h6Fpbtm0EDuW1KmF2uWAP7K4f2/MJessEvY8Zr62WDpIx4PacXhgngBQH/
+superuser_username: dcos-admin
+dcos_overlay_enable: 'false'

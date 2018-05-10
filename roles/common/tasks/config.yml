@@ -1,3 +1,77 @@
 ---
-- name: set hostname
-  hostname: name={{ name }}
+- name: mkdir /data/zookeper
+  file:
+    path: /data/zookeeper
+    state: directory
+
+- name: mkdir /data/docker
+  file:
+    path: /data/docker
+    state: directory
+
+- name: mkdir /data/dcos
+  file:
+    path: /data/dcos
+    state: directory
+
+- name: mkdir /data/mesos
+  file:
+    path: /data/mesos
+    state: directory
+ 
+
+- name: Link /data/zookeeper /var/lib/zookeeper
+  file:
+    src: /data/zookeeper
+    dest: /var/lib/zookeeper
+    state: link
+
+- name: Link /data/docker /var/lib/docker
+  file:
+    src: /data/docker
+    dest: /var/lib/docker
+    state: link
+
+- name: Link /data/dcos /var/lib/dcos
+  file:
+    src: /data/dcos
+    dest: /var/lib/dcos
+    state: link
+
+- name: Link /data/mesos /var/lib/mesos
+  file:
+    src: /data/mesos
+    dest: /var/lib/mesos
+    state: link
+
+
+
+#- name: Create /tmp/var/lib
+#  file:
+#    path: /tmp/var
+#    state: link 
+
+#- name: Backup /var/lib
+#  command: cp -r /var/lib /tmp/var
+
+#- name: Unmount /dev/vdb1 - /data
+#  mount:
+#   name: /data
+#    src: /dev/vdb1
+#    state: unmounted
+
+#- name: Partition /dev/vdb1 - xfs
+#  filesystem: 
+#    fstype: xfs
+#    dev: /dev/vdb1
+#    force: yes
+
+#- name: Mount /dev/vdb - /var/lib
+#  mount:
+#    name: /var/lib
+#    src: /dev/vdb1
+#    fstype: xfs
+#    state: mounted
+
+#- name: Restore /var/lib
+#  command: cp -r /tmp/var/lib /var

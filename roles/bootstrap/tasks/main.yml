@@ -22,7 +22,7 @@
 
 - name: ensure DCOS installation script is present
   get_url:
-    url: https://s3.amazonaws.com/downloads.mesosphere.io/dcos/testing/CM.7/dcos_generate_config.sh
+    url: https://manta.tritonhost.com/smith/public/dcos-1.11-dev/dcos_generate_config.sh
     dest: /root/dcos_generate_config.sh
 
 - name: ensure DCOS installation script has the proper permissions & mode
